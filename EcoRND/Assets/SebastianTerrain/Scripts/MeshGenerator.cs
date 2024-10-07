@@ -4,24 +4,21 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public const int numSupportedLODs = 5;
-    public const int numSupportedChunksizes = 9;
-    public const int numSupportedFlatshadedChunkSizes = 3;
-    public static readonly int[] supportedChunkSizes = { 48, 72, 96, 120, 144, 168, 192, 216, 240 };
-    public static readonly int[] supportedFlatShadedChunkSizes = { 48, 72, 96};
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail, bool useFlatShading)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, MeshSettings meshSettings, int levelOfDetail)
     {
-        AnimationCurve heightCurve = new AnimationCurve(_heightCurve.keys);
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
+
         int borderedSize = heightMap.GetLength(0);
-        int meshSize = borderedSize - 2 * meshSimplificationIncrement;
+        int meshSize = borderedSize - 2*meshSimplificationIncrement;
         int meshSizeUnsimplified = borderedSize - 2;
+
         float topLeftX = (meshSizeUnsimplified - 1) / -2f;
         float topLeftZ = (meshSizeUnsimplified - 1) / 2f;
 
+
         int verticesPerLine = (meshSize - 1) / meshSimplificationIncrement + 1;
 
-        MeshData meshData = new MeshData(borderedSize, useFlatShading);
+        MeshData meshData = new MeshData(verticesPerLine, meshSettings.useFlatShading);
         int[,] vertexIndicesMap = new int[borderedSize, borderedSize];
         int meshVertexIndex = 0;
         int borderVertexIndex = -1;
@@ -31,7 +28,8 @@ public static class MeshGenerator
         {
             for (int x = 0; x < borderedSize; x += meshSimplificationIncrement)
             {
-                bool isBorderVertex = y == 0 || borderedSize == 1 || x == 0 || x == borderedSize - 1;
+                bool isBorderVertex = y == 0 || y == borderedSize - 1 || x == 0 || x == borderedSize - 1;
+
                 if (isBorderVertex)
                 {
                     vertexIndicesMap[x, y] = borderVertexIndex;
@@ -51,8 +49,8 @@ public static class MeshGenerator
             {
                 int vertexIndex = vertexIndicesMap[x, y];
                 Vector2 percent = new Vector2((x - meshSimplificationIncrement) / (float)meshSize, (y - meshSimplificationIncrement) / (float)meshSize);
-                float height = heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier;
-                Vector3 vertexPosition = new Vector3(topLeftX + percent.x * meshSizeUnsimplified, height, topLeftZ - percent.y * meshSizeUnsimplified);
+                float height =  heightMap[x,y];
+                Vector3 vertexPosition = new Vector3((topLeftX + percent.x * meshSizeUnsimplified) * meshSettings.meshScale, height, (topLeftZ - percent.y * meshSizeUnsimplified) * meshSettings.meshScale);
 
                 meshData.AddVertex(vertexPosition, percent, vertexIndex);
 
@@ -92,10 +90,11 @@ public class MeshData
 
     public MeshData(int verticesPerLine, bool useFlatShading)
     {
+        this.useFlatShading = useFlatShading;
+
         vertices = new Vector3[verticesPerLine * verticesPerLine];
         uvs = new Vector2[verticesPerLine * verticesPerLine];
-        triangles = new int[(verticesPerLine - 1) * (verticesPerLine - 1) * 6];
-        this.useFlatShading = useFlatShading;
+        triangles = new int[(verticesPerLine-1)*(verticesPerLine-1)*6];
 
         borderVertices = new Vector3[verticesPerLine * 4 + 4];
         borderTriangles = new int[24 * verticesPerLine];
