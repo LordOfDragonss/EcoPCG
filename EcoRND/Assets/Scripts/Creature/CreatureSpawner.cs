@@ -10,6 +10,7 @@ public class CreatureSpawner : MonoBehaviour
 {
     [SerializeField] Creature creatureToSpawn;
     public GameObject creatureBase;
+    public GameObject parent;
 
     [Header("Text Boxes")]
     [SerializeField] TMP_InputField Speed;
@@ -46,7 +47,7 @@ public class CreatureSpawner : MonoBehaviour
     public void SpawnCreatureAtLocation(Vector3 location)
     {
         SetupStats();
-        var newCreature = Instantiate(creatureBase, location,creatureBase.transform.rotation).GetComponent<CreatureController>();
+        var newCreature = Instantiate(creatureBase, location,creatureBase.transform.rotation,parent.transform).GetComponent<CreatureController>();
         Creature creature = newCreature.InitiateCreature(creatureToSpawn.size, creatureToSpawn.speed, creatureToSpawn.VisionRadius, creatureToSpawn.WalkRange, creatureToSpawn.gender, creatureToSpawn.huntType);
         newCreature.Creature = creature;
     }
