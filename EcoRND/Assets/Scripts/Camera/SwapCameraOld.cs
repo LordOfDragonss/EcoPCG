@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwapCamera : MonoBehaviour
+public class SwapCameraOld : MonoBehaviour
 {
     public Camera[] cameras;
 
