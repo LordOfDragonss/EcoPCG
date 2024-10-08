@@ -24,6 +24,7 @@ public class PlayerCamera : MonoBehaviour
     bool isPossessing;
     public bool canMove;
     public bool creatureSpawnMode;
+    public bool creatureDeleteMode;
     public CreatureSpawner creatureSpawner;
 
     public LayerMask creatureSpawnLayer;
@@ -158,27 +159,40 @@ public class PlayerCamera : MonoBehaviour
 
     void Fire()
     {
-        if (!creatureSpawnMode)
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
-            {
-                Debug.Log("Shoot");
-                if (hit.transform.tag == "Creature")
-                {
-                    hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
-                }
-                hasFiredThisFrame = false;
 
-            }
-        }
-        else if (creatureSpawnMode)
+        if (creatureSpawnMode)
         {
             RaycastHit hit;
             if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit, Mathf.Infinity, creatureSpawnLayer))
             {
                 creatureSpawner.SpawnCreatureAtLocation(hit.point);
                 hasFiredThisFrame = false;
+            }
+        }
+        else if (creatureDeleteMode)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
+            {
+                if (hit.transform.tag == "Creature")
+                {
+                    Destroy(hit.transform.gameObject);
+                }
+                hasFiredThisFrame = false;
+
+            }
+        }
+        else
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
+            {
+                if (hit.transform.tag == "Creature")
+                {
+                    hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
+                }
+                hasFiredThisFrame = false;
+
             }
         }
     }
