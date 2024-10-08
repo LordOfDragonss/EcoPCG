@@ -23,7 +23,7 @@ public class CreatureController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         if (isPreSpawned)
-            InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.gender, settings.huntType);
+            Creature = InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.gender, settings.huntType);
         GetComponent<MeshRenderer>().material = settings.material;
         Creature.material = settings.material;
         hasProcreated = false;
@@ -43,9 +43,9 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public void InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, CreatureSettings.Gender gender, CreatureSettings.HuntType huntType)
+    public Creature InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, CreatureSettings.Gender gender, CreatureSettings.HuntType huntType)
     {
-        Creature = new Creature(size, speed, VisionRadius, WalkRange, gender, huntType);
+        return new Creature(size, speed, VisionRadius, WalkRange, gender, huntType);
     }
 
 
