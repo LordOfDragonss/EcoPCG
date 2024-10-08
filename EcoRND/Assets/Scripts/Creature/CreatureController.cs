@@ -99,11 +99,11 @@ public class CreatureController : MonoBehaviour
                         OpposingCreatureController.hasProcreated = true;
                         if (Creature.gender == CreatureSettings.Gender.Female)
                         {
-                            Procreate(settings, OpposingCreatureController.settings);
+                            Procreate(Creature, OpposingCreatureController.Creature,this,OpposingCreatureController);
                         }
                         else
                         {
-                            Procreate(OpposingCreatureController.settings, settings);
+                            Procreate(OpposingCreatureController.Creature, Creature,OpposingCreatureController,this);
                         }
                     }
                 }
@@ -116,17 +116,17 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public void Procreate(CreatureSettings fatherInfo, CreatureSettings motherInfo)
+    public void Procreate(Creature father, Creature mother, CreatureController fatherController, CreatureController motherController)
     {
         GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation);
         CreatureController childController = child.GetComponent<CreatureController>();
         childController.Creature.gender = (CreatureSettings.Gender)UnityEngine.Random.Range(0, 2);
-        childController.settings = (Creature.gender > CreatureSettings.Gender.Male) ? fatherInfo : motherInfo;
+        childController.settings = (Creature.gender > CreatureSettings.Gender.Male) ? fatherController.settings : motherController.settings;
         childController.InitiateCreature(childController.settings.Size, childController.settings.Speed, childController.settings.VisionRadius, childController.settings.WalkRange, childController.settings.gender, childController.settings.huntType);
         Creature childCreature = child.GetComponent<CreatureController>().Creature;
         childController.hasProcreated = false;
         childController.hasTarget = false;
-        childCreature.size = fatherInfo.Size / motherInfo.Size;
+        childCreature.size = father.size + mother.size;
     }
 
     public void MoveTowards(Vector3 target)
