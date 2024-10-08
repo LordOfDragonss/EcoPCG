@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
+    public MenuSettings menu;
     [SerializeField] public float mouseSensitivity = 3f;
     [SerializeField] float movementSpeed = 50f;
     [SerializeField] float mass = 1f;
@@ -21,6 +22,11 @@ public class PlayerCamera : MonoBehaviour
     public SwapCamera CameraSwapper;
 
     bool isPossessing;
+    public bool canMove;
+    public bool creatureSpawnMode;
+    public CreatureSpawner creatureSpawner;
+
+    public LayerMask creatureSpawnLayer;
 
     (Vector3, Quaternion) initialPositionAndRotation;
 
@@ -33,6 +39,7 @@ public class PlayerCamera : MonoBehaviour
     InputAction fireAction;
     InputAction exitAction;
     InputAction swapCamAction;
+    InputAction menuAction;
 
     private void Awake()
     {
@@ -44,6 +51,8 @@ public class PlayerCamera : MonoBehaviour
         fireAction = playerInput.actions["fire"];
         exitAction = playerInput.actions["exit"];
         swapCamAction = playerInput.actions["swapcam"];
+        menuAction = playerInput.actions["openMenu"];
+
     }
     // Start is called before the first frame update
     void Start()
@@ -51,36 +60,52 @@ public class PlayerCamera : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         initialPositionAndRotation = (transform.position, transform.rotation);
         CameraSwapper.SwitchCamera(0);
+        canMove = true;
     }
     // Update is called once per frame
     void Update()
     {
-        if (isPossessing)
+        if (menuAction.WasPerformedThisFrame())
         {
-            if (exitAction.WasPerformedThisFrame())
+            if (!menu.menuEnabled)
             {
-                isPossessing = false;
-                transform.parent = null;
+                menu.EnableMenu();
+            }
+            else
+            {
+                menu.DisableMenu();
             }
         }
-
-        float value = swapCamAction.ReadValue<float>();
-        if (value != 0f)
+        if (canMove)
         {
-            CameraSwapper.SwapCameraInList(value);
-        }
 
-        if (!isPossessing)
-        {
-            UpdateLook();
-            UpdateMovement();
-            UpdateFly();
-        }
+            if (isPossessing)
+            {
+                if (exitAction.WasPerformedThisFrame())
+                {
+                    isPossessing = false;
+                    transform.parent = null;
+                }
+            }
 
-        if (fireAction.WasPressedThisFrame() && !hasFiredThisFrame)
-        {
-            hasFiredThisFrame = true;
-            Fire();
+            float value = swapCamAction.ReadValue<float>();
+            if (value != 0f)
+            {
+                CameraSwapper.SwapCameraInList(value);
+            }
+
+            if (!isPossessing)
+            {
+                UpdateLook();
+                UpdateMovement();
+                UpdateFly();
+            }
+
+            if (fireAction.WasPressedThisFrame() && !hasFiredThisFrame)
+            {
+                hasFiredThisFrame = true;
+                Fire();
+            }
         }
 
     }
@@ -132,16 +157,28 @@ public class PlayerCamera : MonoBehaviour
 
     void Fire()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
+        if (!creatureSpawnMode)
         {
-            Debug.Log("Shoot");
-            if (hit.transform.tag == "Creature")
+            RaycastHit hit;
+            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
             {
-                hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
-            }
-            hasFiredThisFrame = false;
+                Debug.Log("Shoot");
+                if (hit.transform.tag == "Creature")
+                {
+                    hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
+                }
+                hasFiredThisFrame = false;
 
+            }
+        }
+        else if (creatureSpawnMode)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit, Mathf.Infinity, creatureSpawnLayer))
+            {
+                creatureSpawner.SpawnCreatureAtLocation(hit.point);
+                hasFiredThisFrame = false;
+            }
         }
     }
 

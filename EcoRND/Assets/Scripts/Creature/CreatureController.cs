@@ -8,6 +8,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class CreatureController : MonoBehaviour
 {
+    public bool isPreSpawned;
     public Creature Creature;
     public CreatureSettings settings;
     public SphereCollider VisionCircle;
@@ -21,7 +22,8 @@ public class CreatureController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        InitiateCreature();
+        if (isPreSpawned)
+            InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.gender, settings.huntType);
         GetComponent<MeshRenderer>().material = settings.material;
         Creature.material = settings.material;
         hasProcreated = false;
@@ -41,9 +43,9 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public void InitiateCreature()
+    public void InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, CreatureSettings.Gender gender, CreatureSettings.HuntType huntType)
     {
-        Creature = new Creature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.gender, settings.huntType);
+        Creature = new Creature(size, speed, VisionRadius, WalkRange, gender, huntType);
     }
 
 
@@ -117,12 +119,13 @@ public class CreatureController : MonoBehaviour
     public void Procreate(CreatureSettings fatherInfo, CreatureSettings motherInfo)
     {
         GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation);
-        child.GetComponent<CreatureController>().Creature.gender = (CreatureSettings.Gender)UnityEngine.Random.Range(0, 2);
-        child.GetComponent<CreatureController>().settings = (Creature.gender > CreatureSettings.Gender.Male) ? fatherInfo : motherInfo;
-        child.GetComponent<CreatureController>().InitiateCreature();
+        CreatureController childController = child.GetComponent<CreatureController>();
+        childController.Creature.gender = (CreatureSettings.Gender)UnityEngine.Random.Range(0, 2);
+        childController.settings = (Creature.gender > CreatureSettings.Gender.Male) ? fatherInfo : motherInfo;
+        childController.InitiateCreature(childController.settings.Size, childController.settings.Speed, childController.settings.VisionRadius, childController.settings.WalkRange, childController.settings.gender, childController.settings.huntType);
         Creature childCreature = child.GetComponent<CreatureController>().Creature;
-        child.GetComponent<CreatureController>().hasProcreated = false;
-        child.GetComponent<CreatureController>().hasTarget = false;
+        childController.hasProcreated = false;
+        childController.hasTarget = false;
         childCreature.size = fatherInfo.Size / motherInfo.Size;
     }
 
