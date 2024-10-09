@@ -14,6 +14,7 @@ public class MenuSettings : MonoBehaviour
     private void Start()
     {
         canvas = GetComponent<Canvas>();
+        DisableMenu();
     }
 
     public void EnableMenu()

@@ -62,7 +62,6 @@ public class PlayerCamera : MonoBehaviour
         initialPositionAndRotation = (transform.position, transform.rotation);
         CameraSwapper.SwitchCamera(0);
         canMove = true;
-        menu.DisableMenu();
     }
     // Update is called once per frame
     void Update()
