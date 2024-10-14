@@ -15,14 +15,19 @@ public class StatDisplay : MonoBehaviour
     public TextMeshProUGUI Size;
     public TextMeshProUGUI VisionRadius;
     public TextMeshProUGUI WalkRange;
-    public TextMeshProUGUI Gender;
+    public TextMeshProUGUI Diet;
     public TextMeshProUGUI HuntType;
+    public TextMeshProUGUI Hunger;
 
     public void EnableCanvas()
     {
         canvas.enabled = true;
         isVisible = true;
         SetupStats();
+    }
+    private void Update()
+    {
+        Hunger.text = "Hunger: " + creature.Hunger.ToString();
     }
 
     private void LateUpdate()
@@ -36,7 +41,6 @@ public class StatDisplay : MonoBehaviour
         Size.text = "Size: " + creature.size.ToString();
         VisionRadius.text = "Vision Radius: " + creature.VisionRadius.ToString();
         WalkRange.text = "Walk Range: " + creature.WalkRange.ToString();
-        Gender.text = "Gender: " + creature.gender.ToString();
         HuntType.text = "Hunt Type: " + creature.huntType.ToString();
     }
 

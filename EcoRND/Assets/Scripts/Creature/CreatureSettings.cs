@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Enums;
 
 [CreateAssetMenu]
 public class CreatureSettings : ScriptableObject
@@ -11,15 +12,8 @@ public class CreatureSettings : ScriptableObject
     public float VisionRadius;
     public float WalkRange;
     public Material material;
-    public enum Gender
-    {
-        Male,Female
-    }
 
-    public Gender gender;
-    public enum HuntType
-    {
-        Predator,Prey
-    }
+
+    public Diet diet;
     public HuntType huntType;
 }

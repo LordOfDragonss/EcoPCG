@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Enums;
 
 public class MenuSettings : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class MenuSettings : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         cursorImage.enabled = false;
         canvas.enabled = true;
-        playerCamera.creatureSpawnMode = false;
+        playerCamera.isInSpawnMode = false;
+        playerCamera.creatureDeleteMode = false;
         playerCamera.canMove = false;
     }
     public void DisableMenu()
@@ -39,7 +41,16 @@ public class MenuSettings : MonoBehaviour
     public void EnableCreatureSpawner()
     {
         DisableMenu();
-        playerCamera.creatureSpawnMode = true;
+        playerCamera.isInSpawnMode = true;
+        playerCamera.spawnMode = SpawnMode.Creature;
+        cursorImage.color = Color.green;
+    }
+
+    public void EnableFoodSpawner()
+    {
+        DisableMenu();
+        playerCamera.isInSpawnMode = true;
+        playerCamera.spawnMode = SpawnMode.Food;
         cursorImage.color = Color.green;
     }
 

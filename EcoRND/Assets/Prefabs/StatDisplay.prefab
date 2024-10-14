@@ -808,14 +808,17 @@ MonoBehaviour:
     VisionRadius: 0
     WalkRange: 0
     material: {fileID: 0}
-    gender: 0
+    diet: 0
     huntType: 0
+    Hunger: 0
+  isVisible: 0
   Speed: {fileID: 8139140794146049456}
   Size: {fileID: 3604126098726254672}
   VisionRadius: {fileID: 4078727741865404005}
   WalkRange: {fileID: 1940036701882695935}
-  Gender: {fileID: 3903396175474869706}
+  Diet: {fileID: 3903396175474869706}
   HuntType: {fileID: 5635391865544562382}
+  Hunger: {fileID: 0}
 --- !u!1 &9053005843263933540
 GameObject:
   m_ObjectHideFlags: 0

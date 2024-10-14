@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Enums;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -23,11 +24,12 @@ public class PlayerCamera : MonoBehaviour
 
     bool isPossessing;
     public bool canMove;
-    public bool creatureSpawnMode;
+    public SpawnMode spawnMode;
+    public bool isInSpawnMode;
     public bool creatureDeleteMode;
     public CreatureSpawner creatureSpawner;
 
-    public LayerMask creatureSpawnLayer;
+    public LayerMask objectSpawnLayer;
 
     (Vector3, Quaternion) initialPositionAndRotation;
 
@@ -159,12 +161,15 @@ public class PlayerCamera : MonoBehaviour
     void Fire()
     {
 
-        if (creatureSpawnMode)
+        if (isInSpawnMode)
         {
             RaycastHit hit;
-            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit, Mathf.Infinity, creatureSpawnLayer))
+            if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit, Mathf.Infinity, objectSpawnLayer))
             {
-                creatureSpawner.SpawnCreatureAtLocation(hit.point);
+                if (spawnMode == SpawnMode.Creature)
+                    creatureSpawner.SpawnCreatureAtLocation(hit.point);
+                if (spawnMode == SpawnMode.Food)
+                    creatureSpawner.SpawnFoodAtLocation(hit.point);
                 hasFiredThisFrame = false;
             }
         }

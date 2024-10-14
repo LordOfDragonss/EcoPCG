@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Enums;
 
 public class VisionLogic : MonoBehaviour
 {
@@ -10,22 +11,26 @@ public class VisionLogic : MonoBehaviour
     private void Start()
     {
         personalController = GetComponentInParent<CreatureController>();
-        currentCreature = personalController.Creature;
+        currentCreature = personalController.creature;
     }
 
     private void OnTriggerStay(Collider other)
     {
+        if(other.gameObject.tag == "Plant" && personalController.creature.diet == Diet.Herbivore)
+        {
+            personalController.MoveTowards(other.transform.position);
+            personalController.hasTarget = true;
+        }
         if (other.gameObject.tag == "Creature")
         {
             var OpposingCreatureController = other.gameObject.GetComponent<CreatureController>();
             if (OpposingCreatureController != null)
             {
-                Creature Opposingcreature = OpposingCreatureController.Creature;
-                bool isOppositeGender = Opposingcreature.gender != currentCreature.gender;
+                Creature Opposingcreature = OpposingCreatureController.creature;
                 bool isSameHuntType = Opposingcreature.huntType == currentCreature.huntType;
-                bool isHunteronPrey = currentCreature.huntType == CreatureSettings.HuntType.Predator && Opposingcreature.huntType == CreatureSettings.HuntType.Prey;
-                bool isPreyOnHunter = currentCreature.huntType == CreatureSettings.HuntType.Prey && Opposingcreature.huntType == CreatureSettings.HuntType.Predator;
-                if (isOppositeGender && isSameHuntType && !personalController.hasProcreated && !OpposingCreatureController.hasProcreated)
+                bool isHunteronPrey = currentCreature.huntType == HuntType.Predator && Opposingcreature.huntType ==  HuntType.Prey;
+                bool isPreyOnHunter = currentCreature.huntType == HuntType.Prey && Opposingcreature.huntType == HuntType.Predator;
+                if (isSameHuntType && !personalController.hasProcreated && !OpposingCreatureController.hasProcreated)
                 {
                     personalController.MoveTowards(OpposingCreatureController.transform.position);
                     personalController.hasTarget = true;
@@ -50,7 +55,7 @@ public class VisionLogic : MonoBehaviour
             var OpposingCreatureController = other.gameObject.GetComponent<CreatureController>();
             if (OpposingCreatureController != null)
             {
-                Creature Opposingcreature = OpposingCreatureController.Creature;
+                Creature Opposingcreature = OpposingCreatureController.creature;
 
                 if (personalController.hasTarget)
                 {
