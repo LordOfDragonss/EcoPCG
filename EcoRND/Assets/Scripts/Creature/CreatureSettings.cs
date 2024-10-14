@@ -11,7 +11,7 @@ public class CreatureSettings : ScriptableObject
     public float Speed;
     public float VisionRadius;
     public float WalkRange;
-    public Material material;
+    public Color color;
 
 
     public Diet diet;

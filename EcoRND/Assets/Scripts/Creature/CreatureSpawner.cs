@@ -18,12 +18,16 @@ public class CreatureSpawner : MonoBehaviour
     [SerializeField] TMP_InputField Size;
     [SerializeField] TMP_InputField VisionRadius;
     [SerializeField] TMP_InputField WalkRange;
-    [SerializeField] TMP_Dropdown Gender;
+    [SerializeField] TMP_Dropdown Diet;
     [SerializeField] TMP_Dropdown HuntType;
+
+    [Header("Color")]
+    [SerializeField] FlexibleColorPicker colorPicker;
+
 
     private void Update()
     {
-        SetupStats();
+        UpdateStats();
     }
 
     public void FillUpDropDowns()
@@ -31,7 +35,7 @@ public class CreatureSpawner : MonoBehaviour
 
     }
 
-    public void SetupStats()
+    public void UpdateStats()
     {
         if (Speed.text != "")
             creatureToSpawn.speed = float.Parse(Speed.text);
@@ -41,20 +45,21 @@ public class CreatureSpawner : MonoBehaviour
             creatureToSpawn.VisionRadius = float.Parse(VisionRadius.text);
         if (WalkRange.text != "")
             creatureToSpawn.WalkRange = float.Parse(WalkRange.text);
+        creatureToSpawn.color = colorPicker.color;
+        creatureToSpawn.diet = (Diet)Diet.value;
         creatureToSpawn.huntType = (HuntType)HuntType.value;
     }
 
     public void SpawnCreatureAtLocation(Vector3 location)
     {
-        SetupStats();
+        UpdateStats();
         var newCreature = Instantiate(creatureBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<CreatureController>();
-        Creature creature = newCreature.InitiateCreature(creatureToSpawn.size, creatureToSpawn.speed, creatureToSpawn.VisionRadius, creatureToSpawn.WalkRange, creatureToSpawn.diet, creatureToSpawn.huntType);
+        Creature creature = newCreature.InitiateCreature(creatureToSpawn.size, creatureToSpawn.speed, creatureToSpawn.VisionRadius, creatureToSpawn.WalkRange,creatureToSpawn.color, creatureToSpawn.diet, creatureToSpawn.huntType);
         newCreature.creature = creature;
     }
 
     public void SpawnFoodAtLocation(Vector3 location)
     {
-        SetupStats();
-        var newCreature = Instantiate(foodBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<CreatureController>();
+        var newFood = Instantiate(foodBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<CreatureController>();
     }
 }

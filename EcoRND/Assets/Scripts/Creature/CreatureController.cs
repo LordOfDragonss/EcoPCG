@@ -29,10 +29,9 @@ public class CreatureController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         if (isPreSpawned)
-            creature = InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.diet, settings.huntType);
-        GetComponent<MeshRenderer>().material = settings.material;
-        creature.material = settings.material;
+            creature = InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.color, settings.diet, settings.huntType);
         hasProcreated = false;
+        GetComponent<MeshRenderer>().material.color = creature.color;
         statDisplay.DisableCanvas();
         statDisplay.creature = creature;
     }
@@ -49,21 +48,26 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public Creature InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, Diet diet, HuntType huntType)
+    public Creature InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, Color color, Diet diet, HuntType huntType)
     {
-        return new Creature(size, speed, VisionRadius, WalkRange, diet, huntType,maxHunger);
+        return new Creature(size, speed, VisionRadius, WalkRange, color, diet, huntType, maxHunger);
     }
 
 
     private void Update()
     {
+        
         transform.localScale = new Vector3(creature.size, creature.size, creature.size);
         VisionCircle.radius = creature.VisionRadius;
-        if(creature.Hunger > 0 && creature.Hunger <= maxHunger)
+        if (creature.Hunger > 0)
         {
             creature.Hunger -= HungerDecay;
         }
-        if(creature.Hunger <= 0)
+        if(creature.Hunger > maxHunger)
+        {
+            creature.Hunger = maxHunger;
+        }
+        if (creature.Hunger <= 0)
         {
             isDying = true;
             creature.Hunger = 0;
@@ -101,7 +105,7 @@ public class CreatureController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.tag == "Plant" && creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore)
+        if (other.gameObject.tag == "Plant" && creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore)
         {
             creature.Hunger +=  other.gameObject.GetComponent<Food>().HungerValue;
             Destroy(other.gameObject);
@@ -142,7 +146,7 @@ public class CreatureController : MonoBehaviour
     {
         GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation);
         CreatureController childController = child.GetComponent<CreatureController>();
-        childController.InitiateCreature(childController.settings.Size, childController.settings.Speed, childController.settings.VisionRadius, childController.settings.WalkRange, childController.settings.diet, childController.settings.huntType);
+        childController.InitiateCreature(childController.settings.Size, childController.settings.Speed, childController.settings.VisionRadius, childController.settings.WalkRange, childController.settings.color, childController.settings.diet, childController.settings.huntType);
         Creature childCreature = child.GetComponent<CreatureController>().creature;
         childController.hasProcreated = false;
         childController.hasTarget = false;
@@ -173,15 +177,16 @@ public class Creature
     public float speed;
     public float VisionRadius;
     public float WalkRange;
-    public Material material;
+    public Color color;
     public Diet diet;
     public HuntType huntType;
     public float Hunger;
-    public Creature(float size, float speed, float VisionRadius, float WalkRange, Diet diet, HuntType huntType, float maxHunger)
+    public Creature(float size, float speed, float VisionRadius, float WalkRange, Color color, Diet diet, HuntType huntType, float maxHunger)
     {
         this.size = size;
         this.speed = speed;
         this.VisionRadius = VisionRadius;
+        this.color = color;
         this.diet = diet;
         this.huntType = huntType;
         this.WalkRange = WalkRange;
