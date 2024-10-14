@@ -101,7 +101,7 @@ public class CreatureController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.tag == "Plant" && creature.diet == Diet.Herbivore)
+        if(other.gameObject.tag == "Plant" && creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore)
         {
             creature.Hunger +=  other.gameObject.GetComponent<Food>().HungerValue;
             Destroy(other.gameObject);
