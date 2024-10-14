@@ -16,7 +16,6 @@ MonoBehaviour:
   Speed: 10
   VisionRadius: 10
   WalkRange: 15
-  baseMaterial: {fileID: 2100000, guid: 3b6cb1312e40c534abb69aaf42d2aeb5, type: 2}
-  color: {r: 1, g: 0.390566, b: 0.76177305, a: 0}
+  color: {r: 1, g: 0.3679244, b: 0.7443833, a: 0}
   diet: 0
   huntType: 1
