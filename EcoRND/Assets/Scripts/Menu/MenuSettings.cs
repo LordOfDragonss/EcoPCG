@@ -21,7 +21,7 @@ public class MenuSettings : MonoBehaviour
     public void EnableMenu()
     {
         menuEnabled = true;
-        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.None;
         cursorImage.enabled = false;
         canvas.enabled = true;
         playerCamera.isInSpawnMode = false;

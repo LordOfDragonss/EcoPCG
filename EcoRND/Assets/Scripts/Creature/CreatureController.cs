@@ -110,7 +110,7 @@ public class CreatureController : MonoBehaviour
         }
         if (other.gameObject.tag == "Creature")
         {
-            var OpposingCreatureController = other.gameObject.GetComponent<CreatureController>();
+            CreatureController OpposingCreatureController = other.gameObject.GetComponent<CreatureController>();
             if (OpposingCreatureController != null)
             {
                 Creature Opposingcreature = OpposingCreatureController.creature;
@@ -132,7 +132,7 @@ public class CreatureController : MonoBehaviour
                 }
                 if (isHunteronPrey)
                 {
-                    Destroy(other.gameObject);
+                    OpposingCreatureController.Die();
                     creature.Hunger += Opposingcreature.size;
                     hasTarget = false;
                 }
