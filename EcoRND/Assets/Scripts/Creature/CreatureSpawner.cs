@@ -18,8 +18,9 @@ public class CreatureSpawner : MonoBehaviour
     public GameObject loadList;
     public GameObject LoadButtonPreset;
     private List<GameObject> ActiveLoadButtons = new List<GameObject>();
+    private Food spawnFood;
 
-    [Header("Text Boxes")]
+    [Header("Creature Text Boxes")]
     [SerializeField] TMP_InputField Name;
     [SerializeField] TMP_InputField Speed;
     [SerializeField] TMP_InputField Size;
@@ -28,6 +29,9 @@ public class CreatureSpawner : MonoBehaviour
     [SerializeField] TMP_InputField MaxHunger;
     [SerializeField] TMP_Dropdown Diet;
     [SerializeField] TMP_Dropdown HuntType;
+
+    [Header ("Food Text Boxes")]
+    [SerializeField] TMP_InputField HungerValue;
 
     [Header("Color")]
     [SerializeField] FlexibleColorPicker colorPicker;
@@ -135,7 +139,8 @@ public class CreatureSpawner : MonoBehaviour
 
     public void SpawnFoodAtLocation(Vector3 location)
     {
-        var newFood = Instantiate(foodBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<CreatureController>();
+        spawnFood = Instantiate(foodBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<Food>();
+        spawnFood.HungerValue = float.Parse(HungerValue.text);
     }
 }
 
