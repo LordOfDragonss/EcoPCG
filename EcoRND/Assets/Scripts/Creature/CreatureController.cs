@@ -18,18 +18,16 @@ public class CreatureController : MonoBehaviour
     private bool hasRandomTarget;
     private Vector3 randomDestination;
     public LayerMask groundLayer;
-    public float maxHunger;
     private bool isDying;
     private float dyingTimer;
     [SerializeField] private float HungerDecay;
-    public float Stamina;
     Rigidbody rb;
     public bool hasProcreated;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         if (isPreSpawned)
-            creature = InitiateCreature(settings.Size, settings.Speed, settings.VisionRadius, settings.WalkRange, settings.color, settings.diet, settings.huntType);
+            creature = InitiateCreature(settings);
         hasProcreated = false;
         GetComponent<MeshRenderer>().material.color = creature.color;
         statDisplay.DisableCanvas();
@@ -48,9 +46,9 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    public Creature InitiateCreature(float size, float speed, float VisionRadius, float WalkRange, Color color, Diet diet, HuntType huntType)
+    public Creature InitiateCreature(CreatureSettings settings)
     {
-        return new Creature(size, speed, VisionRadius, WalkRange, color, diet, huntType, maxHunger);
+        return new Creature(settings);
     }
 
 
@@ -63,9 +61,9 @@ public class CreatureController : MonoBehaviour
         {
             creature.Hunger -= HungerDecay;
         }
-        if(creature.Hunger > maxHunger)
+        if(creature.Hunger > creature.maxHunger)
         {
-            creature.Hunger = maxHunger;
+            creature.Hunger = creature.maxHunger;
         }
         if (creature.Hunger <= 0)
         {
@@ -81,7 +79,7 @@ public class CreatureController : MonoBehaviour
         {
             Die();
         }
-        if (!hasTarget && creature.Hunger < maxHunger)
+        if (!hasTarget && creature.Hunger < creature.maxHunger)
         {
             if (!hasRandomTarget) randomDestination = PickRandomDirection();
             if (hasRandomTarget) MoveTowards(randomDestination);
@@ -146,7 +144,7 @@ public class CreatureController : MonoBehaviour
     {
         GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation);
         CreatureController childController = child.GetComponent<CreatureController>();
-        childController.InitiateCreature(childController.settings.Size, childController.settings.Speed, childController.settings.VisionRadius, childController.settings.WalkRange, childController.settings.color, childController.settings.diet, childController.settings.huntType);
+        childController.InitiateCreature(childController.settings);
         Creature childCreature = child.GetComponent<CreatureController>().creature;
         childController.hasProcreated = false;
         childController.hasTarget = false;
@@ -181,15 +179,17 @@ public class Creature
     public Diet diet;
     public HuntType huntType;
     public float Hunger;
-    public Creature(float size, float speed, float VisionRadius, float WalkRange, Color color, Diet diet, HuntType huntType, float maxHunger)
+    public float maxHunger;
+    public Creature(CreatureSettings settings)
     {
-        this.size = size;
-        this.speed = speed;
-        this.VisionRadius = VisionRadius;
-        this.color = color;
-        this.diet = diet;
-        this.huntType = huntType;
-        this.WalkRange = WalkRange;
+        this.size = settings.Size;
+        this.speed = settings.Speed;
+        this.VisionRadius = settings.VisionRadius;
+        this.color = settings.color;
+        this.diet = settings.diet;
+        this.huntType = settings.huntType;
+        this.WalkRange = settings.WalkRange;
+        this.maxHunger = settings.maxHunger;
         Hunger = maxHunger;
     }
 }

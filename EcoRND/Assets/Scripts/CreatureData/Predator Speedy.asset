@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a825f922e69747479b25e42642d7d55, type: 3}
-  m_Name: PredatorFemale
+  m_Name: Predator Speedy
   m_EditorClassIdentifier: 
   Size: 0.5
   Speed: 15
   VisionRadius: 40
   WalkRange: 15
-  baseMaterial: {fileID: 2100000, guid: 768bd3bb497ffa649b3348f2e128f91c, type: 2}
-  color: {r: 1, g: 0, b: 0, a: 0}
+  color: {r: 1, g: 0, b: 0.31514072, a: 0}
+  Stamina: 0
+  maxHunger: 100
   diet: 1
   huntType: 0

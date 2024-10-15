@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -9,13 +10,14 @@ using static Enums;
 
 public class CreatureSpawner : MonoBehaviour
 {
-    [SerializeField] Creature creatureToSpawn;
+    [SerializeField] CreatureSettings creatureToSpawnSettings;
     public GameObject creatureBase;
     public GameObject foodBase;
     public GameObject parent;
     public List<CreatureSettings> creatureSettings;
     public GameObject loadList;
     public GameObject LoadButtonPreset;
+    private List<GameObject> ActiveLoadButtons = new List<GameObject>();
 
     [Header("Text Boxes")]
     [SerializeField] TMP_InputField Name;
@@ -23,12 +25,18 @@ public class CreatureSpawner : MonoBehaviour
     [SerializeField] TMP_InputField Size;
     [SerializeField] TMP_InputField VisionRadius;
     [SerializeField] TMP_InputField WalkRange;
+    [SerializeField] TMP_InputField MaxHunger;
     [SerializeField] TMP_Dropdown Diet;
     [SerializeField] TMP_Dropdown HuntType;
 
     [Header("Color")]
     [SerializeField] FlexibleColorPicker colorPicker;
 
+    private void Start()
+    {
+        FillDropdownWithEnum<Diet>(Diet);
+        FillDropdownWithEnum<HuntType>(HuntType);
+    }
 
     private void Update()
     {
@@ -45,9 +53,10 @@ public class CreatureSpawner : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void FillUpDropDowns()
+    void FillDropdownWithEnum<T>(TMP_Dropdown dropdown) where T : System.Enum
     {
-
+        dropdown.ClearOptions(); // Clear existing options if any
+        dropdown.AddOptions(System.Enum.GetNames(typeof(T)).ToList()); // Add enum values as options
     }
 
     public void FillTextboxesWithSettings(CreatureSettings settings)
@@ -57,6 +66,8 @@ public class CreatureSpawner : MonoBehaviour
         Size.text = settings.Size.ToString();
         VisionRadius.text = settings.VisionRadius.ToString();
         WalkRange.text = settings.WalkRange.ToString();
+        MaxHunger.text = settings.maxHunger.ToString();
+        colorPicker.color = settings.color;
         Diet.value = (int)settings.diet;
         HuntType.value = (int)settings.huntType;
     }
@@ -64,25 +75,33 @@ public class CreatureSpawner : MonoBehaviour
     public void SaveCreature()
     {
         var newCreatureSettings = ScriptableObject.CreateInstance<CreatureSettings>();
-        newCreatureSettings.Speed = creatureToSpawn.speed;
-        newCreatureSettings.Size = creatureToSpawn.size;
-        newCreatureSettings.VisionRadius = creatureToSpawn.VisionRadius;
-        newCreatureSettings.WalkRange = creatureToSpawn.WalkRange;
-        newCreatureSettings.color = creatureToSpawn.color;
-        newCreatureSettings.diet = creatureToSpawn.diet;
-        newCreatureSettings.huntType = creatureToSpawn.huntType;
         newCreatureSettings.name = Name.text;
+        newCreatureSettings.Speed = creatureToSpawnSettings.Speed;
+        newCreatureSettings.Size = creatureToSpawnSettings.Size;
+        newCreatureSettings.VisionRadius = creatureToSpawnSettings.VisionRadius;
+        newCreatureSettings.WalkRange = creatureToSpawnSettings.WalkRange;
+        newCreatureSettings.maxHunger = creatureToSpawnSettings.maxHunger;
+        newCreatureSettings.color = creatureToSpawnSettings.color;
+        newCreatureSettings.diet = creatureToSpawnSettings.diet;
+        newCreatureSettings.huntType = creatureToSpawnSettings.huntType;
         creatureSettings.Add(newCreatureSettings);
     }
 
     public void LoadCreature()
     {
+        // Clear existing buttons safely
+        for (int i = ActiveLoadButtons.Count - 1; i >= 0; i--)
+        {
+            Destroy(ActiveLoadButtons[i]); // Destroy the button
+            ActiveLoadButtons.RemoveAt(i); // Remove from the list
+        }
         foreach (var settings in creatureSettings)
         {
             LoadButton loadButton = Instantiate(LoadButtonPreset, loadList.transform).GetComponent<LoadButton>();
             loadButton.gameObject.name = settings.name;
             loadButton.creatureSettings = settings;
             loadButton.creatureSpawner = this;
+            ActiveLoadButtons.Add(loadButton.gameObject);
         }
         DisableCanvas();
         loadList.SetActive(true);
@@ -91,16 +110,18 @@ public class CreatureSpawner : MonoBehaviour
     public void UpdateStats()
     {
         if (Speed.text != "")
-            creatureToSpawn.speed = float.Parse(Speed.text);
+            creatureToSpawnSettings.Speed = float.Parse(Speed.text);
         if (Size.text != "")
-            creatureToSpawn.size = float.Parse(Size.text);
+            creatureToSpawnSettings.Size = float.Parse(Size.text);
         if (VisionRadius.text != "")
-            creatureToSpawn.VisionRadius = float.Parse(VisionRadius.text);
+            creatureToSpawnSettings.VisionRadius = float.Parse(VisionRadius.text);
         if (WalkRange.text != "")
-            creatureToSpawn.WalkRange = float.Parse(WalkRange.text);
-        creatureToSpawn.color = colorPicker.color;
-        creatureToSpawn.diet = (Diet)Diet.value;
-        creatureToSpawn.huntType = (HuntType)HuntType.value;
+            creatureToSpawnSettings.WalkRange = float.Parse(WalkRange.text);
+        if (MaxHunger.text != "")
+            creatureToSpawnSettings.maxHunger = float.Parse(MaxHunger.text);
+        creatureToSpawnSettings.color = colorPicker.color;
+        creatureToSpawnSettings.diet = (Diet)Diet.value;
+        creatureToSpawnSettings.huntType = (HuntType)HuntType.value;
     }
 
     public void SpawnCreatureAtLocation(Vector3 location)
@@ -108,7 +129,7 @@ public class CreatureSpawner : MonoBehaviour
         UpdateStats();
         var newCreature = Instantiate(creatureBase, location, creatureBase.transform.rotation, parent.transform).GetComponent<CreatureController>();
         newCreature.gameObject.name = Name.text;
-        Creature creature = newCreature.InitiateCreature(creatureToSpawn.size, creatureToSpawn.speed, creatureToSpawn.VisionRadius, creatureToSpawn.WalkRange, creatureToSpawn.color, creatureToSpawn.diet, creatureToSpawn.huntType);
+        Creature creature = newCreature.InitiateCreature(creatureToSpawnSettings);
         newCreature.creature = creature;
     }
 

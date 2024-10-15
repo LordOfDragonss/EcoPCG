@@ -12,6 +12,8 @@ public class CreatureSettings : ScriptableObject
     public float VisionRadius;
     public float WalkRange;
     public Color color;
+    public float Stamina;
+    public float maxHunger;
 
 
     public Diet diet;

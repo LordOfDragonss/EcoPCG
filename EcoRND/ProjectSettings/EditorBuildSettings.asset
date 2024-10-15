@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/SebastianTerrain/Scenes/TerrainScene.unity
     guid: aea7254ed5064034bb8e061036426453
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: 459ee6fbb72e3a8498bef6e901db6ca9
   m_configObjects: {}

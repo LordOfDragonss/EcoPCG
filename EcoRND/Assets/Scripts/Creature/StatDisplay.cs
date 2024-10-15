@@ -41,6 +41,7 @@ public class StatDisplay : MonoBehaviour
         Size.text = "Size: " + creature.size.ToString();
         VisionRadius.text = "Vision Radius: " + creature.VisionRadius.ToString();
         WalkRange.text = "Walk Range: " + creature.WalkRange.ToString();
+        Diet.text = "Diet: " + creature.diet.ToString();
         HuntType.text = "Hunt Type: " + creature.huntType.ToString();
     }
 
