@@ -18,8 +18,8 @@ public class CreatureController : MonoBehaviour
     private bool hasRandomTarget;
     private Vector3 randomDestination;
     public LayerMask groundLayer;
-    private bool isDying;
-    private float dyingTimer;
+    [SerializeField] private bool isDying;
+    [SerializeField] private float dyingTimer;
     [SerializeField] private float HungerDecay;
     Rigidbody rb;
     public bool hasProcreated;
@@ -48,6 +48,7 @@ public class CreatureController : MonoBehaviour
 
     public Creature InitiateCreature(CreatureSettings settings)
     {
+        HungerDecay = HungerDecay * (settings.Speed / 10f) * settings.Size;
         return new Creature(settings);
     }
 
@@ -103,7 +104,7 @@ public class CreatureController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Plant" && creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore)
+        if (other.gameObject.tag == "Plant" && (creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore))
         {
             creature.Hunger +=  other.gameObject.GetComponent<Food>().HungerValue;
             Destroy(other.gameObject);
@@ -146,6 +147,7 @@ public class CreatureController : MonoBehaviour
         CreatureController childController = child.GetComponent<CreatureController>();
         childController.InitiateCreature(childController.settings);
         Creature childCreature = child.GetComponent<CreatureController>().creature;
+        childCreature.Hunger = childCreature.maxHunger;
         childController.hasProcreated = false;
         childController.hasTarget = false;
         childCreature.size = father.size + mother.size;

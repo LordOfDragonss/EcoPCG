@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a825f922e69747479b25e42642d7d55, type: 3}
-  m_Name: Basic Male
+  m_Name: Basic Prey
   m_EditorClassIdentifier: 
   Size: 1.5
   Speed: 15

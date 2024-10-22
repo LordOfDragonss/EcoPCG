@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static Enums;
 
 public class PlayerCamera : MonoBehaviour
@@ -28,6 +29,7 @@ public class PlayerCamera : MonoBehaviour
     public bool isInSpawnMode;
     public bool creatureDeleteMode;
     public CreatureSpawner creatureSpawner;
+    public GameObject cursorOutline;
 
     public LayerMask objectSpawnLayer;
 
@@ -103,6 +105,13 @@ public class PlayerCamera : MonoBehaviour
                 UpdateMovement();
                 UpdateFly();
             }
+            if (hasFiredThisFrame)
+            {
+                cursorOutline.SetActive(true);
+            }else if (!hasFiredThisFrame)
+            {
+                cursorOutline.SetActive(false);
+            }
 
             if (fireAction.WasPressedThisFrame() && !hasFiredThisFrame)
             {
@@ -111,6 +120,10 @@ public class PlayerCamera : MonoBehaviour
             }
         }
 
+    }
+    void LateUpdate()
+    {
+        hasFiredThisFrame = false; // Ensure reset happens at the end of each frame
     }
 
     void UpdateMovement()
@@ -160,7 +173,6 @@ public class PlayerCamera : MonoBehaviour
 
     void Fire()
     {
-
         if (isInSpawnMode)
         {
             RaycastHit hit;
@@ -170,7 +182,6 @@ public class PlayerCamera : MonoBehaviour
                     creatureSpawner.SpawnCreatureAtLocation(hit.point);
                 if (spawnMode == SpawnMode.Food)
                     creatureSpawner.SpawnFoodAtLocation(hit.point);
-                hasFiredThisFrame = false;
             }
         }
         else if (creatureDeleteMode)
@@ -182,8 +193,6 @@ public class PlayerCamera : MonoBehaviour
                 {
                     Destroy(hit.transform.gameObject);
                 }
-                hasFiredThisFrame = false;
-
             }
         }
         else
@@ -195,8 +204,6 @@ public class PlayerCamera : MonoBehaviour
                 {
                     hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
                 }
-                hasFiredThisFrame = false;
-
             }
         }
     }

@@ -242,6 +242,7 @@ MonoBehaviour:
     diet: 0
     huntType: 0
     Hunger: 0
+    maxHunger: 0
 --- !u!1 &7461224051761505063
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,6 +527,7 @@ MonoBehaviour:
     diet: 0
     huntType: 0
     Hunger: 0
+    maxHunger: 0
   settings: {fileID: 11400000, guid: e574e7b2aaa016e4bba4050780583b79, type: 2}
   VisionCircle: {fileID: 6255258738266088710}
   statDisplay: {fileID: 3983575754178125153}
@@ -533,9 +535,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  maxHunger: 100
-  HungerDecay: 0.01
-  Stamina: 100
+  HungerDecay: 0.1
   hasProcreated: 0
 --- !u!1 &8861787944452926656
 GameObject:
