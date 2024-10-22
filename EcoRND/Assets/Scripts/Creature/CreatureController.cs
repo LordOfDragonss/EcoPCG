@@ -157,7 +157,7 @@ public class CreatureController : MonoBehaviour
 
     public void Procreate(Creature father, Creature mother, CreatureController fatherController, CreatureController motherController)
     {
-        GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation);
+        GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation,transform.parent);
         CreatureController childController = child.GetComponent<CreatureController>();
         childController.InitiateCreature(childController.settings);
         Creature childCreature = child.GetComponent<CreatureController>().creature;
