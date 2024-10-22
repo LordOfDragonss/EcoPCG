@@ -9,15 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a825f922e69747479b25e42642d7d55, type: 3}
-  m_Name: Predator Speedy
+  m_Script: {fileID: 11500000, guid: 6f7e63d864c8a3846abc51a6a796d818, type: 3}
+  m_Name: DefaultWorld
   m_EditorClassIdentifier: 
-  Size: 0.5
-  Speed: 15
-  VisionRadius: 40
-  WalkRange: 15
-  color: {r: 0.6577053, g: 0, b: 1, a: 0}
-  Stamina: 0
-  maxHunger: 100
-  diet: 1
-  huntType: 0
+  HungerDecay: 0.01
+  TimeTillCreatureDeath: 3

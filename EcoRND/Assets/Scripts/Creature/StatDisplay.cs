@@ -11,6 +11,7 @@ public class StatDisplay : MonoBehaviour
     public bool isVisible;
 
     [Header("Text Boxes")]
+    public TextMeshProUGUI DyingNotification;
     public TextMeshProUGUI Speed;
     public TextMeshProUGUI Size;
     public TextMeshProUGUI VisionRadius;
@@ -28,6 +29,16 @@ public class StatDisplay : MonoBehaviour
     private void Update()
     {
         Hunger.text = "Hunger: " + creature.Hunger.ToString();
+        if (creature.isDying)
+        {
+            DyingNotification.enabled = true;
+            DyingNotification.text = "Creature is Dying in " + creature.dyingTimer;
+            DyingNotification.color = Color.red;
+        }
+        else
+        {
+            DyingNotification.enabled = false;
+        }
     }
 
     private void LateUpdate()

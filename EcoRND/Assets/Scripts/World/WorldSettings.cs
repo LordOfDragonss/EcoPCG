@@ -5,5 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class WorldSettings : ScriptableObject
 {
-
+    public float HungerDecay;
+    public float TimeTillCreatureDeath;
 }

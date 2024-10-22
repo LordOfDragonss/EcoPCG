@@ -18,8 +18,7 @@ public class CreatureController : MonoBehaviour
     private bool hasRandomTarget;
     private Vector3 randomDestination;
     public LayerMask groundLayer;
-    [SerializeField] private bool isDying;
-    [SerializeField] private float dyingTimer;
+    private WorldSettings worldSettings;
     [SerializeField] private float HungerDecay;
     Rigidbody rb;
     public bool hasProcreated;
@@ -30,8 +29,10 @@ public class CreatureController : MonoBehaviour
             creature = InitiateCreature(settings);
         hasProcreated = false;
         GetComponent<MeshRenderer>().material.color = creature.color;
+        worldSettings = WorldController.instance.settings;
         statDisplay.DisableCanvas();
         statDisplay.creature = creature;
+        creature.dyingTimer = worldSettings.TimeTillCreatureDeath;
     }
 
     public void DisplayStats()
@@ -48,14 +49,13 @@ public class CreatureController : MonoBehaviour
 
     public Creature InitiateCreature(CreatureSettings settings)
     {
-        HungerDecay = HungerDecay * (settings.Speed / 10f) * settings.Size;
         return new Creature(settings);
     }
 
 
     private void Update()
     {
-        
+        UpdateHungerDecay();
         transform.localScale = new Vector3(creature.size, creature.size, creature.size);
         VisionCircle.radius = creature.VisionRadius;
         if (creature.Hunger > 0)
@@ -66,17 +66,25 @@ public class CreatureController : MonoBehaviour
         {
             creature.Hunger = creature.maxHunger;
         }
+        if(creature.isDying && creature.Hunger > 0)
+        {
+            creature.dyingTimer = worldSettings.TimeTillCreatureDeath;
+            creature.isDying = false;
+        }
         if (creature.Hunger <= 0)
         {
-            isDying = true;
-            creature.Hunger = 0;
-            dyingTimer = 3;
+            creature.dyingTimer = worldSettings.TimeTillCreatureDeath;
+            if (creature.dyingTimer > 0)
+            {
+                creature.isDying = true;
+                creature.Hunger = 0;
+            }
         }
-        if (isDying)
+        if (creature.isDying)
         {
-            dyingTimer -= 0.1f * Time.time;
+            creature.dyingTimer -= 0.1f * Time.time;
         }
-        if (isDying && dyingTimer <= 0)
+        if (creature.isDying && creature.dyingTimer < 0)
         {
             Die();
         }
@@ -86,6 +94,12 @@ public class CreatureController : MonoBehaviour
             if (hasRandomTarget) MoveTowards(randomDestination);
             if (hasRandomTarget && Vector3.Distance(transform.position, randomDestination) < 1) hasRandomTarget = false;
         }
+    }
+
+    public void UpdateHungerDecay()
+    {
+        HungerDecay = worldSettings.HungerDecay;
+        HungerDecay = HungerDecay * (settings.Speed / 10f) * settings.Size;
     }
 
     Vector3 PickRandomDirection()
@@ -182,6 +196,8 @@ public class Creature
     public HuntType huntType;
     public float Hunger;
     public float maxHunger;
+    public bool isDying;
+    public float dyingTimer;
     public Creature(CreatureSettings settings)
     {
         this.size = settings.Size;
