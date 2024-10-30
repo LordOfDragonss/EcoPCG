@@ -62,7 +62,7 @@ public class TerrainChunk
         for (int i = 0; i < detailLevels.Length; i++)
         {
             lodMeshes[i] = new LODMesh(detailLevels[i].lod);
-            lodMeshes[i].updateCallback += UpdateTerainChunk;
+            lodMeshes[i].updateCallback += UpdateTerrainChunk;
             if (i == colliderLODIndex)
             {
                 lodMeshes[i].updateCallback += UpdateCollisionMesh;
@@ -84,7 +84,7 @@ public class TerrainChunk
         this.heightMap = (HeightMap)heightMapObject;
         HeightMapReceived = true;
 
-        UpdateTerainChunk();
+        UpdateTerrainChunk();
     }
 
     Vector2 viewerPosition
@@ -92,7 +92,7 @@ public class TerrainChunk
         get { return new Vector2(viewer.position.x, viewer.position.z); }
     }
 
-    public void UpdateTerainChunk()
+    public void UpdateTerrainChunk()
     {
         if (HeightMapReceived)
         {
