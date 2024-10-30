@@ -243,6 +243,8 @@ MonoBehaviour:
     huntType: 0
     Hunger: 0
     maxHunger: 0
+    isDying: 0
+    dyingTimer: 0
 --- !u!1 &7461224051761505063
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,6 +362,7 @@ GameObject:
   - component: {fileID: 2143800998646996210}
   - component: {fileID: 8952837149951469846}
   - component: {fileID: 4172003511938230293}
+  - component: {fileID: 1224432283125823721}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Creature
@@ -517,7 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48fa3dc47fc942c49a096609327cc7bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPreSpawned: 0
+  isPreSpawned: 1
   creature:
     size: 0
     speed: 0
@@ -528,6 +531,8 @@ MonoBehaviour:
     huntType: 0
     Hunger: 0
     maxHunger: 0
+    isDying: 0
+    dyingTimer: 0
   settings: {fileID: 11400000, guid: e574e7b2aaa016e4bba4050780583b79, type: 2}
   VisionCircle: {fileID: 6255258738266088710}
   statDisplay: {fileID: 3983575754178125153}
@@ -535,10 +540,28 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  isDying: 0
-  dyingTimer: 0
   HungerDecay: 0.1
+  isSelected: 0
+  outline: {fileID: 1224432283125823721}
   hasProcreated: 0
+--- !u!114 &1224432283125823721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8025587163675282255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 2
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &8861787944452926656
 GameObject:
   m_ObjectHideFlags: 0

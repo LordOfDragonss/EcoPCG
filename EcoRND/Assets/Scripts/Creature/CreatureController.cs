@@ -20,6 +20,8 @@ public class CreatureController : MonoBehaviour
     public LayerMask groundLayer;
     private WorldSettings worldSettings;
     [SerializeField] private float HungerDecay;
+    public bool isSelected;
+    public Outline outline;
     Rigidbody rb;
     public bool hasProcreated;
     private void Start()
@@ -62,11 +64,11 @@ public class CreatureController : MonoBehaviour
         {
             creature.Hunger -= HungerDecay;
         }
-        if(creature.Hunger > creature.maxHunger)
+        if (creature.Hunger > creature.maxHunger)
         {
             creature.Hunger = creature.maxHunger;
         }
-        if(creature.isDying && creature.Hunger > 0)
+        if (creature.isDying && creature.Hunger > 0)
         {
             creature.dyingTimer = worldSettings.TimeTillCreatureDeath;
             creature.isDying = false;
@@ -94,6 +96,15 @@ public class CreatureController : MonoBehaviour
             if (hasRandomTarget) MoveTowards(randomDestination);
             if (hasRandomTarget && Vector3.Distance(transform.position, randomDestination) < 1) hasRandomTarget = false;
         }
+        if (isSelected)
+        {
+            if (outline == null)
+                outline = gameObject.AddComponent<Outline>();
+        }
+        else if (!isSelected)
+        {
+            Destroy(outline);
+        }
     }
 
     public void UpdateHungerDecay()
@@ -120,7 +131,7 @@ public class CreatureController : MonoBehaviour
     {
         if (other.gameObject.tag == "Plant" && (creature.diet == Diet.Herbivore || creature.diet == Diet.Omnivore))
         {
-            creature.Hunger +=  other.gameObject.GetComponent<Food>().HungerValue;
+            creature.Hunger += other.gameObject.GetComponent<Food>().HungerValue;
             Destroy(other.gameObject);
         }
         if (other.gameObject.tag == "Creature")
@@ -157,7 +168,7 @@ public class CreatureController : MonoBehaviour
 
     public void Procreate(Creature father, Creature mother, CreatureController fatherController, CreatureController motherController)
     {
-        GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation,transform.parent);
+        GameObject child = Instantiate(this.gameObject, gameObject.transform.position + new Vector3(1, 1, 1), gameObject.transform.rotation, transform.parent);
         CreatureController childController = child.GetComponent<CreatureController>();
         childController.InitiateCreature(childController.settings);
         Creature childCreature = child.GetComponent<CreatureController>().creature;

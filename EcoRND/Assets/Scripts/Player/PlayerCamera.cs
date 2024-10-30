@@ -30,6 +30,8 @@ public class PlayerCamera : MonoBehaviour
     public bool creatureDeleteMode;
     public CreatureSpawner creatureSpawner;
     public GameObject cursorOutline;
+    CreatureController selectedCreature;
+    bool hasCreatureSelected;
 
     public LayerMask objectSpawnLayer;
 
@@ -45,6 +47,7 @@ public class PlayerCamera : MonoBehaviour
     InputAction exitAction;
     InputAction swapCamAction;
     InputAction menuAction;
+    InputAction editAction;
 
     private void Awake()
     {
@@ -57,6 +60,7 @@ public class PlayerCamera : MonoBehaviour
         exitAction = playerInput.actions["exit"];
         swapCamAction = playerInput.actions["swapcam"];
         menuAction = playerInput.actions["openMenu"];
+        editAction = playerInput.actions["edit"];
 
     }
     // Start is called before the first frame update
@@ -72,6 +76,10 @@ public class PlayerCamera : MonoBehaviour
     {
         if (menuAction.WasPerformedThisFrame())
         {
+            if (hasCreatureSelected)
+            {
+                menu.tab.OnTabSelected(menu.creatureSelector);
+            }
             if (!menu.menuEnabled)
             {
                 menu.EnableMenu();
@@ -108,9 +116,14 @@ public class PlayerCamera : MonoBehaviour
             if (hasFiredThisFrame)
             {
                 cursorOutline.SetActive(true);
-            }else if (!hasFiredThisFrame)
+            }
+            else if (!hasFiredThisFrame)
             {
                 cursorOutline.SetActive(false);
+            }
+            if (editAction.WasPerformedThisFrame())
+            {
+                EditSelect();
             }
 
             if (fireAction.WasPressedThisFrame() && !hasFiredThisFrame)
@@ -203,6 +216,33 @@ public class PlayerCamera : MonoBehaviour
                 if (hit.transform.tag == "Creature")
                 {
                     hit.transform.gameObject.GetComponent<CreatureController>().DisplayStats();
+                }
+            }
+        }
+    }
+
+    void EditSelect()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(cameraTransform.transform.position, cameraTransform.transform.forward, out hit))
+        {
+            if (hit.transform.tag == "Creature")
+            {
+                CreatureController newController = hit.transform.gameObject.GetComponent<CreatureController>();
+                if (newController != selectedCreature && selectedCreature != null && hasCreatureSelected)
+                {
+                    selectedCreature.isSelected = false;
+                    selectedCreature = newController;
+                }
+                else if(selectedCreature == null)
+                {
+                    selectedCreature = newController;
+                }
+                hasCreatureSelected = true;
+                selectedCreature.isSelected = !selectedCreature.isSelected;
+                if (selectedCreature.isSelected)
+                {
+                    creatureSpawner.FillTextboxesWithSettings(selectedCreature.settings);
                 }
             }
         }
