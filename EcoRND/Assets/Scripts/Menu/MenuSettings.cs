@@ -11,6 +11,8 @@ public class MenuSettings : MonoBehaviour
     public PlayerCamera playerCamera;
     public bool menuEnabled;
     Canvas canvas;
+    public TabGroup tab;
+    public TabButton creatureSelector;
 
     private void Start()
     {
