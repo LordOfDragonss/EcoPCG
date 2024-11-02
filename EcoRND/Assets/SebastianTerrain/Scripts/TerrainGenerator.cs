@@ -15,6 +15,7 @@ public class TerrainGenerator : MonoBehaviour
     public MeshSettings meshSettings;
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
+    public GameObject WaterPrefab;
 
     public Transform viewer;
 
@@ -85,8 +86,9 @@ public class TerrainGenerator : MonoBehaviour
                         TerrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                     }
                     else
-                    { TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
-                        TerrainChunkDictionary.Add(viewedChunkCoord,newChunk );
+                    {
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                        TerrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
                     }
@@ -100,13 +102,30 @@ public class TerrainGenerator : MonoBehaviour
         if (isVisible)
         {
             VisibleTerrainChunks.Add(chunk);
+            GameObject water = Instantiate(WaterPrefab, chunk.meshObject.transform);
+            water.transform.localScale = Vector3.one * 12 * meshSettings.meshScale;
+            water.transform.localPosition = new Vector3(water.transform.localPosition.x, water.transform.localPosition.y + textureSettings.waterLevel, water.transform.localPosition.z);
         }
         else
         {
             VisibleTerrainChunks.Remove(chunk);
+            DestroyWater(chunk);
+        }
+    }
+    void DestroyWater(TerrainChunk chunk)
+    {
+        for (int i = 0; i < chunk.meshObject.transform.childCount; i++)
+        {
+            GameObject child = chunk.meshObject.transform.GetChild(i).gameObject;
+            if (child.layer == 4)
+            {
+                Destroy(child);
+            }
         }
     }
 }
+
+
 [System.Serializable]
 public struct LODInfo
 {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "TerrainGeneration/MeshSettings")]
 public class MeshSettings : UpdatableData
 {
     public float meshScale = 2.5f;
