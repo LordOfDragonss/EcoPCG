@@ -520,7 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48fa3dc47fc942c49a096609327cc7bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPreSpawned: 1
+  isPreSpawned: 0
   creature:
     size: 0
     speed: 0
