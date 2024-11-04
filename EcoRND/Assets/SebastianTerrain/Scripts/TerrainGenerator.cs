@@ -99,18 +99,23 @@ public class TerrainGenerator : MonoBehaviour
 
     void OnTerrainChunkVisibilityChanged(TerrainChunk chunk, bool isVisible)
     {
+        Debug.Log("Visibilty Changed: " + isVisible);
         if (isVisible)
         {
             VisibleTerrainChunks.Add(chunk);
-            GameObject water = Instantiate(WaterPrefab, chunk.meshObject.transform);
-            water.transform.localScale = Vector3.one * 12 * meshSettings.meshScale;
-            water.transform.localPosition = new Vector3(water.transform.localPosition.x, water.transform.localPosition.y + textureSettings.waterLevel, water.transform.localPosition.z);
+            GenerateWater(chunk);
         }
         else
         {
             VisibleTerrainChunks.Remove(chunk);
             DestroyWater(chunk);
         }
+    }
+    public void GenerateWater(TerrainChunk chunk)
+    {
+        GameObject water = Instantiate(WaterPrefab, chunk.meshObject.transform);
+        water.transform.localScale = Vector3.one * 12 * meshSettings.meshScale;
+        water.transform.localPosition = new Vector3(water.transform.localPosition.x, water.transform.localPosition.y + textureSettings.waterLevel, water.transform.localPosition.z);
     }
     void DestroyWater(TerrainChunk chunk)
     {
@@ -123,7 +128,10 @@ public class TerrainGenerator : MonoBehaviour
             }
         }
     }
+
 }
+
+
 
 
 [System.Serializable]
