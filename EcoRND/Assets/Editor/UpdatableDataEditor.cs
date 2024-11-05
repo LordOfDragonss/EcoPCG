@@ -13,7 +13,7 @@ public class UpdatableDataEditor : Editor
 
         if (GUILayout.Button("Update"))
         {
-            data.NotifyOffUpdatedValues();
+            data.NotifyOfUpdatedValues();
             EditorUtility.SetDirty(target);
         }
     }

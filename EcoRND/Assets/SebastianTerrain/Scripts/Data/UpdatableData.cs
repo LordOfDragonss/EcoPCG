@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class UpdatableData : ScriptableObject
 {
-    public event System.Action OnValuesUpdated;
 
+    public event System.Action OnValuesUpdated;
     public bool autoUpdate;
 
 #if UNITY_EDITOR
@@ -14,17 +13,19 @@ public class UpdatableData : ScriptableObject
     {
         if (autoUpdate)
         {
-            UnityEditor.EditorApplication.update += NotifyOffUpdatedValues;
+            UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
         }
     }
 
-    public void NotifyOffUpdatedValues()
+    public void NotifyOfUpdatedValues()
     {
-        UnityEditor.EditorApplication.update -= NotifyOffUpdatedValues;
+        UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
         if (OnValuesUpdated != null)
         {
             OnValuesUpdated();
         }
     }
+
 #endif
+
 }
