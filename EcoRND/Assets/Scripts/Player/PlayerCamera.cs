@@ -12,7 +12,7 @@ public class PlayerCamera : MonoBehaviour
     public MenuSettings menu;
     [SerializeField] public float mouseSensitivity = 3f;
     [SerializeField] float movementSpeed = 50f;
-    [SerializeField] float mass = 1f;
+    //[SerializeField] float mass = 1f;
     [SerializeField] float acceleration = 20f;
     [SerializeField] Transform cameraTransform;
 
@@ -34,8 +34,6 @@ public class PlayerCamera : MonoBehaviour
     bool hasCreatureSelected;
 
     public LayerMask objectSpawnLayer;
-
-    (Vector3, Quaternion) initialPositionAndRotation;
 
     public event Action OnBeforeMove;
 
@@ -67,7 +65,6 @@ public class PlayerCamera : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        initialPositionAndRotation = (transform.position, transform.rotation);
         CameraSwapper.SwitchCamera(0);
         canMove = true;
     }
