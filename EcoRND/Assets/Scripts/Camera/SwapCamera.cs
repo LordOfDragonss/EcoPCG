@@ -28,7 +28,6 @@ public class SwapCamera : MonoBehaviour
 
     public void SwitchCamera(int index)
     {
-        Debug.Log(index);
         foreach (var cam in cameras)
         {
             cam.enabled = false;
